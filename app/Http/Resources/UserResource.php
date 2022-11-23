@@ -18,6 +18,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'displayName' => $this->display_name,
             'email' => $this->email,
+            'posts' => PostResource::collection($this->whenLoaded('posts')),
         ];
     }
 }
