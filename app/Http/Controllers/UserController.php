@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -35,5 +36,9 @@ class UserController extends Controller
     return new UserResource(User::create($request->all()));
   }
 
+  public function update(UpdateUserRequest $request, User $user) {
+    $user->update($request->all());
 
+    return new UserResource($user);
+  }
 }
