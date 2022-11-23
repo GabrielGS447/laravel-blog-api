@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
+use App\Http\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
@@ -29,4 +30,10 @@ class UserController extends Controller
 
     return new UserResource($user);
   }
+
+  public function store(StoreUserRequest $request) {
+    return new UserResource(User::create($request->all()));
+  }
+
+
 }
