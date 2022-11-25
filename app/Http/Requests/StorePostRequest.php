@@ -24,7 +24,6 @@ class StorePostRequest extends FormRequest
     public function rules()
     {
         return [
-            'userId' => ['required', 'integer', 'exists:users,id'],
             'title' => ['required', 'string'],
             'body' => ['required', 'string'],
         ];
@@ -34,7 +33,7 @@ class StorePostRequest extends FormRequest
         $validator->after(function ($validator) {
           if ($validator->errors()->count() === 0) {
             $this->merge([
-                'user_id' => $this->userId
+                'user_id' => $this->user()->id,
             ]);
           }
         });

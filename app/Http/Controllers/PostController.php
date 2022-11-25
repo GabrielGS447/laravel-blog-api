@@ -61,6 +61,12 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(UpdatePostRequest $request, Post $post) {
+      if ($post['user_id'] !== $request->user()->id) {
+        return response()->json([
+          'message' => 'You are not authorized to update this post.'
+        ], 403);
+      }
+
       $post->update($request->all());
 
       return new PostResource($post);
@@ -73,6 +79,12 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Post $post) {
+      if ($post['user_id'] !== request()->user()->id) {
+        return response()->json([
+          'message' => 'You are not authorized to update this post.'
+        ], 403);
+      }
+
       $post->delete();
 
       return response()->json(status: 204);
