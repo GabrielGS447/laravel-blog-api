@@ -18,7 +18,7 @@ class PostController extends Controller
     public function index() {
       $includeUser = request()->query('includeUser', false);
 
-      $posts = Post::all();
+      $posts = Post::paginate(10);
 
       if ($includeUser) {
         $posts->load('user');
