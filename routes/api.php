@@ -28,4 +28,5 @@ Route::controller(PostController::class)->group(function (){
   Route::get('/posts/{post}', 'show');
   Route::post('/posts', 'store');
   Route::patch('/posts/{post}', 'update');
+  Route::delete('/posts/{post}', 'destroy');
 });
