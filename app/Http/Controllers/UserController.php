@@ -36,14 +36,19 @@ class UserController extends Controller
     return new UserResource(User::create($request->all()));
   }
 
-  public function update(UpdateUserRequest $request, User $user) {
+  public function update(UpdateUserRequest $request) {
+    $user = $request->user(); // Get the authenticated user
+
     $user->update($request->all());
 
     return new UserResource($user);
   }
 
-  public function destroy(User $user) {
+  public function destroy() {
+    $user = request()->user();
+
     $user->delete();
+    $user->tokens()->delete();
 
     return response()->json(status: 204);
   }

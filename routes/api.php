@@ -26,8 +26,8 @@ Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{post}', [PostController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::patch('/users/{user}', [UserController::class, 'update']);
-    Route::delete('/users/{user}', [UserController::class, 'destroy']);
+    Route::patch('/users', [UserController::class, 'update']);
+    Route::delete('/users', [UserController::class, 'destroy']);
 
     Route::post('/posts', [PostController::class, 'store']);
     Route::patch('/posts/{post}', [PostController::class, 'update']);
