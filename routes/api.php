@@ -27,4 +27,5 @@ Route::controller(PostController::class)->group(function (){
   Route::get('/posts', 'index');
   Route::get('/posts/{post}', 'show');
   Route::post('/posts', 'store');
+  Route::patch('/posts/{post}', 'update');
 });
