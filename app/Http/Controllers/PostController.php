@@ -49,9 +49,8 @@ class PostController extends Controller
      * @param  \App\Http\Requests\StorePostRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePostRequest $request)
-    {
-        //
+    public function store(StorePostRequest $request) {
+      return new PostResource(Post::create($request->all()));
     }
 
     /**
