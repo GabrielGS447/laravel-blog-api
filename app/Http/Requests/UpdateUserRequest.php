@@ -24,6 +24,7 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
+            'display_name' => ['prohibited'],
             'displayName' => ['sometimes', 'required', 'string'],
             'email' => ['sometimes', 'required', 'email', 'unique:users,email'],
             'password' => ['sometimes', 'required', 'string', 'min:8'],
