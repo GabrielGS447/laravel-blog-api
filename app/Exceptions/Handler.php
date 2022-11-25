@@ -3,6 +3,10 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -46,5 +50,49 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Register the exception handling callbacks for the application.
+     *
+     * @param $request
+     * @param Throwable $e
+     * @return JsonResponse|Response
+     * @throws Throwable
+     */
+    public function render($request, Throwable $e): Response|JsonResponse
+    {
+        if ($request->wantsJson())
+            return $this->handleApiException($e);
+
+        return parent::render($request, $e);
+    }
+
+    /**
+     * Register the exception handling callbacks for the application.
+     *
+     * @param Throwable $e
+     * @return JsonResponse
+     */
+    private function handleApiException(Throwable $e): JsonResponse
+    {
+        $e = $this->prepareException($e);
+
+        if ($e instanceof NotFoundHttpException) {
+          return response()->json([
+            'message' => 'Resource not found',
+          ], 404);
+        }
+
+        if ($e instanceof ValidationException) {
+          return response()->json([
+            'message' => 'Validation failed',
+            'errors' => $e->errors(),
+          ], 422);
+        }
+            
+        return response()->json([
+          'message' => 'Internal server error',
+        ], 500);
     }
 }
