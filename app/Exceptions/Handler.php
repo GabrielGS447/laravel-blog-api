@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -77,6 +78,11 @@ class Handler extends ExceptionHandler
     private function handleApiException(Throwable $e): JsonResponse
     {
         $e = $this->prepareException($e);
+
+        if ($e instanceof AuthenticationException)
+            return response()->json([
+                'message' => 'Unauthenticated'
+            ], 401);
 
         if ($e instanceof NotFoundHttpException) {
           return response()->json([

@@ -16,20 +16,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('/auth/login', [AuthController::class, 'login']);
 
-Route::controller(UserController::class)->group(function () {
-  Route::get('/users', 'index');
-  Route::get('/users/{user}', 'show');
-  Route::post('/users', 'store');
-  Route::patch('/users/{user}', 'update');
-  Route::delete('/users/{user}', 'destroy');
-});
+Route::post('/users', [UserController::class, 'store']);
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/users/{user}', [UserController::class, 'show']);
 
-Route::controller(PostController::class)->group(function (){
-  Route::get('/posts', 'index');
-  Route::get('/posts/{post}', 'show');
-  Route::post('/posts', 'store');
-  Route::patch('/posts/{post}', 'update');
-  Route::delete('/posts/{post}', 'destroy');
+Route::get('/posts', [PostController::class, 'index']);
+Route::get('/posts/{post}', [PostController::class, 'show']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::patch('/users/{user}', [UserController::class, 'update']);
+    Route::delete('/users/{user}', [UserController::class, 'destroy']);
+
+    Route::post('/posts', [PostController::class, 'store']);
+    Route::patch('/posts/{post}', [PostController::class, 'update']);
+    Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 });
