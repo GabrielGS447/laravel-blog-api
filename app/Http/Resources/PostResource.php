@@ -21,6 +21,7 @@ class PostResource extends JsonResource
             'userId' => $this->user_id,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }
