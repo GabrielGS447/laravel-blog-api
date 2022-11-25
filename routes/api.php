@@ -26,6 +26,8 @@ Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{post}', [PostController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+
     Route::patch('/users', [UserController::class, 'update']);
     Route::delete('/users', [UserController::class, 'destroy']);
 
