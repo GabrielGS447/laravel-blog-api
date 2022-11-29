@@ -3,20 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
   public function login (Request $request) {
     $credentials = $request->only('email', 'password');
 
-    if(!auth()->attempt($credentials)) {
+    $user = User::where('email', $credentials['email'])->first();
+
+    if (!$user || !Hash::check($credentials['password'], $user->password)) {
       return response()->json([
         'message' => 'Invalid credentials'
       ], 401);
     }
-
-    $user = $request->user();
 
     return response()->json([
       'data' => [
