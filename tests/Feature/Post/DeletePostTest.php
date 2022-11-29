@@ -30,6 +30,21 @@ class DeletePostTests extends TestCase {
     ]);
   }
 
+  public function test_fail_to_delete_post_when_its_not_found() {
+    /** @var User */
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->deleteJson("/api/posts/1");
+
+    $response
+      ->assertNotFound()
+      ->assertJson(fn (AssertableJson $json) =>
+        $json
+          ->where('message', 'Resource not found')
+          ->etc()
+      );
+  }
+
   public function test_fail_to_delete_post_when_it_doesnt_belong_to_user() {
     /** @var User */
     $userOne = User::factory()->create();

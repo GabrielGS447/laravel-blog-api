@@ -53,4 +53,16 @@ class GetUserByIdTests extends TestCase {
           ->etc()
       );
   }
+
+  public function test_fail_to_get_user_by_id_when_its_not_found() {
+    $response = $this->getJson('/api/users/1');
+
+    $response
+      ->assertNotFound()
+      ->assertJson(fn (AssertableJson $json) =>
+        $json
+          ->where('message', 'Resource not found')
+          ->etc()
+      );
+  }
 }

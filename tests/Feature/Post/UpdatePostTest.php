@@ -180,6 +180,22 @@ class UpdatePostTests extends TestCase {
     ]);
   }
 
+  public function test_fail_to_update_post_when_its_not_found() {
+    /** @var User */
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->patchJson("/api/posts/123", $this->updatePostData);
+
+    $response
+      ->assertNotFound()
+      ->assertJson(fn (AssertableJson $json) =>
+        $json
+          ->has('message')
+          ->where('message', 'Resource not found')
+          ->etc()
+      );
+  }
+
   public function test_fail_to_update_post_when_it_doesnt_belong_to_user() {
     /** @var User */
     $userOne = User::factory()->create();
