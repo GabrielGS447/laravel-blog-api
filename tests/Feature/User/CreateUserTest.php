@@ -16,7 +16,7 @@ class CreateUserTests extends TestCase {
     'password' => 'password',
   ];
 
-  public function test_create_user_with_valid_credentials() {
+  public function test_create_user_with_valid_data() {
     $this->assertDatabaseMissing('users', [
       'email' => $this->newUserData['email'],
     ]);
