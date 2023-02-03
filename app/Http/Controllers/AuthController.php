@@ -9,31 +9,33 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-  public function login (Request $request) {
-    $credentials = $request->only('email', 'password');
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
 
-    $user = User::where('email', $credentials['email'])->first();
+        $user = User::where('email', $credentials['email'])->first();
 
-    if (!$user || !Hash::check($credentials['password'], $user->password)) {
-      return response()->json([
-        'message' => 'Invalid credentials'
-      ], 401);
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+            return response()->json([
+                'message' => 'Invalid credentials',
+            ], 401);
+        }
+
+        return response()->json([
+            'data' => [
+                'user' => new UserResource($user),
+                'access_token' => $user->createToken('auth_token')->plainTextToken,
+                'token_type' => 'Bearer',
+            ],
+        ]);
     }
 
-    return response()->json([
-      'data' => [
-        'user' => new UserResource($user),
-        'access_token' => $user->createToken('auth_token')->plainTextToken,
-        'token_type' => 'Bearer',
-      ]
-    ]);
-  }
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
 
-  public function logout (Request $request) {
-    $request->user()->currentAccessToken()->delete();
-
-    return response()->json([
-      'message' => 'Logged out'
-    ]);
-  }
+        return response()->json([
+            'message' => 'Logged out',
+        ]);
+    }
 }

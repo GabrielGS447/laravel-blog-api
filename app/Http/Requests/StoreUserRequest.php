@@ -30,14 +30,15 @@ class StoreUserRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator) {
+    public function withValidator($validator)
+    {
         $validator->after(function ($validator) {
-          if ($validator->errors()->count() === 0) {
-            $this->merge([
-                'password' => bcrypt($this->password),
-                'display_name' => $this->displayName,
-            ]);
-          }
+            if ($validator->errors()->count() === 0) {
+                $this->merge([
+                    'password' => bcrypt($this->password),
+                    'display_name' => $this->displayName,
+                ]);
+            }
         });
     }
 }

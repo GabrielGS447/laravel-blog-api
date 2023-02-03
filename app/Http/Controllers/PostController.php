@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use App\Http\Resources\PostResource;
-use App\Http\Resources\PostCollection;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\PostCollection;
+use App\Http\Resources\PostResource;
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -15,16 +15,17 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-      $includeUser = request()->query('includeUser', false);
+    public function index()
+    {
+        $includeUser = request()->query('includeUser', false);
 
-      $posts = Post::paginate(10);
+        $posts = Post::paginate(10);
 
-      if ($includeUser) {
-        $posts->load('user');
-      }
+        if ($includeUser) {
+            $posts->load('user');
+        }
 
-      return new PostCollection($posts);
+        return new PostCollection($posts);
     }
 
     /**
@@ -33,14 +34,15 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post) {
-      $includeUser = request()->query('includeUser', false);
+    public function show(Post $post)
+    {
+        $includeUser = request()->query('includeUser', false);
 
-      if ($includeUser) {
-        return new PostResource($post->loadMissing('user'));
-      }
+        if ($includeUser) {
+            return new PostResource($post->loadMissing('user'));
+        }
 
-      return new PostResource($post);
+        return new PostResource($post);
     }
 
     /**
@@ -49,8 +51,9 @@ class PostController extends Controller
      * @param  \App\Http\Requests\StorePostRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePostRequest $request) {
-      return new PostResource(Post::create($request->all()));
+    public function store(StorePostRequest $request)
+    {
+        return new PostResource(Post::create($request->all()));
     }
 
     /**
@@ -60,16 +63,17 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePostRequest $request, Post $post) {
-      if ($post['user_id'] !== $request->user()->id) {
-        return response()->json([
-          'message' => 'You are not authorized to update this post.'
-        ], 403);
-      }
+    public function update(UpdatePostRequest $request, Post $post)
+    {
+        if ($post['user_id'] !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to update this post.',
+            ], 403);
+        }
 
-      $post->update($request->all());
+        $post->update($request->all());
 
-      return new PostResource($post);
+        return new PostResource($post);
     }
 
     /**
@@ -78,15 +82,16 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post) {
-      if ($post['user_id'] !== request()->user()->id) {
-        return response()->json([
-          'message' => 'You are not authorized to update this post.'
-        ], 403);
-      }
+    public function destroy(Post $post)
+    {
+        if ($post['user_id'] !== request()->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to update this post.',
+            ], 403);
+        }
 
-      $post->delete();
+        $post->delete();
 
-      return response()->json(status: 204);
+        return response()->json(status: 204);
     }
 }

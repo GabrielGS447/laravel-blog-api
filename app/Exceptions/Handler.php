@@ -57,14 +57,16 @@ class Handler extends ExceptionHandler
      * Register the exception handling callbacks for the application.
      *
      * @param $request
-     * @param Throwable $e
+     * @param  Throwable  $e
      * @return JsonResponse|Response
+     *
      * @throws Throwable
      */
     public function render($request, Throwable $e): Response|JsonResponse
     {
-        if ($request->wantsJson())
+        if ($request->wantsJson()) {
             return $this->handleApiException($e);
+        }
 
         return parent::render($request, $e);
     }
@@ -72,33 +74,34 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      *
-     * @param Throwable $e
+     * @param  Throwable  $e
      * @return JsonResponse
      */
     private function handleApiException(Throwable $e): JsonResponse
     {
         $e = $this->prepareException($e);
 
-        if ($e instanceof AuthenticationException)
+        if ($e instanceof AuthenticationException) {
             return response()->json([
-                'message' => 'Unauthenticated'
+                'message' => 'Unauthenticated',
             ], 401);
+        }
 
         if ($e instanceof NotFoundHttpException) {
-          return response()->json([
-            'message' => 'Resource not found',
-          ], 404);
+            return response()->json([
+                'message' => 'Resource not found',
+            ], 404);
         }
 
         if ($e instanceof ValidationException) {
-          return response()->json([
-            'message' => 'Validation failed',
-            'errors' => $e->errors(),
-          ], 422);
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
         }
-            
+
         return response()->json([
-          'message' => 'Internal server error',
+            'message' => 'Internal server error',
         ], 500);
     }
 }

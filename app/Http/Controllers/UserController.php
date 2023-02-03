@@ -2,54 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\UserCollection;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 
 class UserController extends Controller
 {
-  public function index() {
-    $includePosts = request()->query('includePosts', false);
+    public function index()
+    {
+        $includePosts = request()->query('includePosts', false);
 
-    $users = User::all();
+        $users = User::all();
 
-    if ($includePosts) {
-      $users->load('posts');
+        if ($includePosts) {
+            $users->load('posts');
+        }
+
+        return new UserCollection($users);
     }
 
-    return new UserCollection($users);
-  }
+    public function show(User $user)
+    {
+        $includePosts = request()->query('includePosts', false);
 
-  public function show(User $user) {
-    $includePosts = request()->query('includePosts', false);
+        if ($includePosts) {
+            return new UserResource($user->loadMissing('posts'));
+        }
 
-    if ($includePosts) {
-      return new UserResource($user->loadMissing('posts'));
+        return new UserResource($user);
     }
 
-    return new UserResource($user);
-  }
+    public function store(StoreUserRequest $request)
+    {
+        return new UserResource(User::create($request->all()));
+    }
 
-  public function store(StoreUserRequest $request) {
-    return new UserResource(User::create($request->all()));
-  }
+    public function update(UpdateUserRequest $request)
+    {
+        $user = $request->user(); // Get the authenticated user
 
-  public function update(UpdateUserRequest $request) {
-    $user = $request->user(); // Get the authenticated user
+        $user->update($request->all());
 
-    $user->update($request->all());
+        return new UserResource($user);
+    }
 
-    return new UserResource($user);
-  }
+    public function destroy()
+    {
+        $user = request()->user();
 
-  public function destroy() {
-    $user = request()->user();
+        $user->delete();
+        $user->tokens()->delete();
 
-    $user->delete();
-    $user->tokens()->delete();
-
-    return response()->json(status: 204);
-  }
+        return response()->json(status: 204);
+    }
 }

@@ -31,12 +31,17 @@ class UpdateUserRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator) {
-      $validator->after(function ($validator) {
-        if ($validator->errors()->count() === 0) {
-          if ($this->password) $this->merge(['password' => bcrypt($this->password)]);
-          if ($this->displayName) $this->merge(['display_name' => $this->displayName]);
-        }
-      });
-  }
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($validator->errors()->count() === 0) {
+                if ($this->password) {
+                    $this->merge(['password' => bcrypt($this->password)]);
+                }
+                if ($this->displayName) {
+                    $this->merge(['display_name' => $this->displayName]);
+                }
+            }
+        });
+    }
 }

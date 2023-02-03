@@ -24,9 +24,9 @@ class UpdatePostRequest extends FormRequest
     public function rules()
     {
         return [
-          'user_id' => ['prohibited'],
-          'title' => ['sometimes', 'required', 'string'],
-          'body' => ['sometimes', 'required', 'string'],
+            'user_id' => ['prohibited'],
+            'title' => ['sometimes', 'required', 'string'],
+            'body' => ['sometimes', 'required', 'string'],
         ];
     }
 }

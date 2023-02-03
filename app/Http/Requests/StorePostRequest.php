@@ -29,13 +29,14 @@ class StorePostRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator) {
+    public function withValidator($validator)
+    {
         $validator->after(function ($validator) {
-          if ($validator->errors()->count() === 0) {
-            $this->merge([
-                'user_id' => $this->user()->id,
-            ]);
-          }
+            if ($validator->errors()->count() === 0) {
+                $this->merge([
+                    'user_id' => $this->user()->id,
+                ]);
+            }
         });
     }
 }
