@@ -3,7 +3,7 @@ FROM composer:2.4 AS composer
 COPY . /app
 
 RUN composer install \
-  # --no-dev \
+  --no-dev \
   --quiet \
   --no-interaction \
   --optimize-autoloader \
