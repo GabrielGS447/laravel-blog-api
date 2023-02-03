@@ -18,3 +18,6 @@ seed-container:
 
 pint:
 	./vendor/bin/pint
+
+make git-hooks:
+	.githooks/install.sh
