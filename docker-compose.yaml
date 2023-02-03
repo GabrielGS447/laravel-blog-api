@@ -2,51 +2,33 @@ version: '3'
 
 services:
   app:
-    build: .
-    ports: 
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
       - "7827:8000" # <--- Caso queira usar uma porta diferente, altere o número da esquerda.
-    restart: always
+    # restart: always
+    env_file:
+      - .env.docker
     depends_on:
-      db:
+      pgsql:
         condition: service_healthy
-    environment:
-      APP_NAME: laravel-blog-api
-      APP_ENV: local
-      APP_KEY: base64:HGK6ThqhJ5NeuHq7SsK3uh2R1/k4+JZMTWwlZZe8lLk=
-      APP_DEBUG: true
-      APP_URL: http://localhost
 
-      LOG_CHANNEL: stack
-      LOG_DEPRECATIONS_CHANNEL: null
-      LOG_LEVEL: debug
-
-      DB_CONNECTION: pgsql
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_DATABASE: postgres
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-
-      BROADCAST_DRIVER: log
-      CACHE_DRIVER: file
-      FILESYSTEM_DISK: local
-      QUEUE_CONNECTION: sync
-      SESSION_DRIVER: file
-      SESSION_LIFETIME: 120
-
-      MEMCACHED_HOST: 127.0.0.1
-
-  db:
-    image: postgres:14.2
+  pgsql:
+    image: postgres:14
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: laravel-blog-api
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"
+        ]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -12,29 +10,29 @@ jobs:
     container:
       image: kirschbaumdevelopment/laravel-test-runner:8.1
     services:
-      postgres:
+      pgsql:
         image: postgres:14
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: testing
+        options: --health-cmd "pg_isready -d testing -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Copy .env
-        run: cp .env.ci .env
+      - name: Set ENV
+        run: mv .env.docker .env
 
       - name: Install Dependencies
         run: |
+          apt update
+          apt install -y php8.1-xdebug
           composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-          php artisan key:generate
 
-      - name: Run Migrations
-        run: php artisan migrate
+      - name: Style Check
+        run: vendor/bin/pint --test
+
 
       - name: Run Tests
-        run: php artisan test
+        run: XDEBUG_MODE=coverage php artisan test --coverage --min=80
