@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
-class UpdateUserTests extends TestCase
+class UpdateUserTest extends TestCase
 {
     use RefreshDatabase;
 

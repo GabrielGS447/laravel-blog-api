@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature\User;
+namespace Tests\Feature\Post;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
-class DeletePostTests extends TestCase
+class DeletePostTest extends TestCase
 {
     use RefreshDatabase;
 
