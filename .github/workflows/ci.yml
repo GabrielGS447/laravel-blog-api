@@ -8,7 +8,7 @@ jobs:
   Test:
     runs-on: ubuntu-22.04
     container:
-      image: ubuntu:22.04
+      image: kirschbaumdevelopment/laravel-test-runner:8.1
     services:
       pgsql:
         image: postgres:14
@@ -21,20 +21,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup PHP with Xdebug
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          coverage: xdebug
-
       - name: Set ENV
         run: mv .env.docker .env
 
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+        run: |
+          apt update
+          apt install -y php8.1-xdebug
+          composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
 
       - name: Style Check
         run: vendor/bin/pint --test
+
 
       - name: Run Tests
         run: XDEBUG_MODE=coverage php artisan test --coverage --min=80
